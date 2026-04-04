@@ -1,5 +1,7 @@
 dictionary = ["below","down","go","going","horn","how","howdy","it","i","low","own","part","partner","sit"]
 
+[1,2].filter_map()
+
 def count_occurences (string, substring)
   windows_size = substring.length - 1
   count = 0
@@ -8,7 +10,6 @@ def count_occurences (string, substring)
 
   while end_win < string.length
     window = string[start_win..end_win]
-    p(window)
     if window == substring
       count += 1
     end
@@ -23,12 +24,15 @@ def substrings (string, dictionary)
   dictionary.reduce(Hash.new(0)) do |count, substring|
     count[substring] += count_occurences(string.downcase, substring)
     count
-  end
+  end.select{ |substring, occurences| occurences != 0}
 end
 
 
 # result = substrings("below", dictionary)
 result = substrings("Howdy partner, sit down! How's it going?", dictionary)
+p(result)
+
+result = substrings("below", dictionary)
 p(result)
 
 # p(count_occurences("Howdy partner, sit down! How's it going?".downcase, "how"))
