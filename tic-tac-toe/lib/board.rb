@@ -17,10 +17,10 @@ class Board
       if @grid[position[0]][position[1]] == '#'
         @grid[position[0]][position[1]] = symbol
       else
-        p 'Position is already taken!'
+        raise StandardError.new('Error, there is already a symbol there!')
       end
-    rescue StandardError
-      p 'Error, index out of bounds!'
+    rescue StandardError => e
+      raise e
     end
   end
 
