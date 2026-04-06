@@ -1,5 +1,8 @@
+require 'json'
+
 class Game
   @@candidate_words = []
+  @@time = Time.new
 
   # function to load a saved game
   def initialize
@@ -44,19 +47,25 @@ class Game
 
   def user_input
     begin
-      puts 'Enter a letter:'
+      puts 'Enter a letter or type "save" to save your progress:'
       letter = gets.chomp
+      save_game; letter = gets.chomp if letter == 'save'
       raise StandardError.new("Can enter a single letter") unless letter.size == 1
       letter = letter.downcase.ord.chr
       raise StandardError.new("Input character must be a letter") unless letter.between?('a', 'z')
       raise StandardError.new("Already guessed this letter") if @guessed_letters.include?(letter)
-
       @guessed_letters << letter
       letter
     rescue StandardError => e
       puts e
       retry
     end
+  end
+
+  def save_game
+    file = File.open("saves/Save-#{current_time}.json", 'w')
+    file.puts(JSON.parse(to_json))
+    file.close()
   end
 
   def self.select_candidate_words
@@ -66,5 +75,23 @@ class Game
       @@candidate_words.push(word) if word.size.between?(5, 8)
     end
     all_words.close
+  end
+
+  def current_time
+    @@time.strftime("%y-%m-%d+%H:%M:%S")
+  end
+
+  def to_json
+    JSON.dump({
+      guesses:@guesses,
+      secret_word:@secret_word,
+      guessed_word:@guessed_word,
+      guessed_letters:@guessed_letters
+    })
+  end
+
+  def self.from_json(string)
+    data = JSON.load(string)
+    
   end
 end
