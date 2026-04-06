@@ -14,7 +14,11 @@ class Board
 
   def place(symbol, position)
     begin
-      @grid[position[0]][position[1]] = symbol
+      if @grid[position[0]][position[1]] == '#'
+        @grid[position[0]][position[1]] = symbol
+      else
+        p 'Position is already taken!'
+      end
     rescue StandardError
       p 'Error, index out of bounds!'
     end
