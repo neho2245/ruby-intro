@@ -5,11 +5,26 @@ class Game
   @@time = Time.new
 
   # function to load a saved game
-  def initialize
-    @guessed_letters = []
-    @guesses = 8
-    @secret_word = @@candidate_words.sample
-    @guessed_word = Array.new(@secret_word.size, '_')
+  def initialize(guessed_letters, guesses, secret_word, guessed_word)
+    @guessed_letters = guessed_letters
+    @guesses = guesses
+    @secret_word = secret_word
+    @guessed_word = guessed_word
+  end
+
+  def self.start_new_game
+    guessed_letters = []
+    guesses = 8
+    secret_word = @@candidate_words.sample
+    guessed_word = Array.new(secret_word.size, '_')
+    Game.new(guessed_letters, guesses, secret_word, guessed_word)
+  end
+
+  def self.load_save(save)
+    fd = File.open("saves/#{save}")
+    data_json = fd.read.chomp
+    data = JSON.parse(data_json)
+    Game.new(data["guessed_letters"], data["guesses"], data["secret_word"], data["guessed_word"])
   end
 
   def display
@@ -64,7 +79,7 @@ class Game
 
   def save_game
     file = File.open("saves/Save-#{current_time}.json", 'w')
-    file.puts(JSON.parse(to_json))
+    file.puts(to_json)
     file.close()
   end
 
@@ -82,16 +97,12 @@ class Game
   end
 
   def to_json
-    JSON.dump({
-      guesses:@guesses,
-      secret_word:@secret_word,
-      guessed_word:@guessed_word,
-      guessed_letters:@guessed_letters
+    JSON.generate({
+      guesses: @guesses,
+      secret_word: @secret_word,
+      guessed_word: @guessed_word,
+      guessed_letters: @guessed_letters
     })
   end
 
-  def self.from_json(string)
-    data = JSON.load(string)
-    
-  end
 end
