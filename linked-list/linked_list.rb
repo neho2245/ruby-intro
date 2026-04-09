@@ -38,22 +38,22 @@ class LinkedList
   end
 
   def head
-    return head.value unless head.nil?
+    return @head.value unless @head.nil?
 
     nil
   end
 
   def tail
-    return tail.value unless tail.nil?
+    return @tail.value unless @tail.nil?
 
     nil
   end
 
   def at(index)
     itterator = @head
-    return nil unless index.between?(0, @size - 1)
+    return nil unless index.between?(0, @size)
 
-    (0..(index - 1)).each do
+    (0..(index - 2)).each do
       itterator = itterator.next
     end
 
@@ -102,7 +102,7 @@ class LinkedList
   end
 
   def insert_at(index, *value)
-    return nil unless index.between?(0, @size - 1)
+    return nil unless index.between?(0, @size)
 
     itterator = @head
     values = *value
@@ -111,7 +111,8 @@ class LinkedList
 
     p values
 
-    (0..index - 1).each do
+    (0..index - 2).each do
+      p "Itter"
       itterator = itterator.next
     end
 
@@ -125,8 +126,13 @@ class LinkedList
       tail = node
     end
 
-    tail.next = itterator.next
-    itterator.next = head
+    if index.zero?
+      tail.next = itterator
+      @head = head
+    else
+      tail.next = itterator.next
+      itterator.next = head
+    end
     @tail = tail.next if index + values.size > @size
     @size += values.size
   end
@@ -140,6 +146,10 @@ list.append(2)
 list.append(3)
 list.append(4)
 
-list.insert_at(0, 10, 11)
+list.insert_at(4, 10, 11)
+
+p list.size
+p list.at 6
+p list.index 11
 
 puts list
